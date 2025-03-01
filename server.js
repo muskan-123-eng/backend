@@ -1,9 +1,9 @@
-const express=require('express')
-const mongoose=require('mongoose')
-require('dotenv').config()
-const User=require('./models/user')
-
-const bcrypt=require('bcryptjs')
+const express = require('express');
+const mongoose = require('mongoose');
+require('dotenv').config();
+const User = require('./models/user');
+const Recipe = require('./models/recipe'); // Import the recipe model
+const bcrypt = require('bcryptjs');
 
 const app=express()
 const PORT=3000
@@ -48,6 +48,28 @@ app.post('/login',async(req,res)=>{
         console.log(err)
     }
 })
+
+
+// Create Recipe API
+app.post('/create-recipe', async (req, res) => {
+    const { title, description, ingredients, instructions } = req.body;
+
+    try {
+        const newRecipe = new Recipe({ 
+            title,
+            description,
+            ingredients,
+            instructions 
+        });
+
+        await newRecipe.save();
+        res.json({ message: 'Recipe Created Successfully!', recipe: newRecipe });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Error creating recipe' });
+    }
+});
+
 
 
 
